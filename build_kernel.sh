@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # private environment
-TOOLCHAIN=/home/pinpong/android/toolchain/gcc-linaro-armeb-linux-gnueabihf-4.8-2013.10_linux/bin/armeb-linux-gnueabihf-
 KERNEL_DIR=/home/pinpong/android/android_kernel_htc_m7-gpe
+CWM=$KERNEL_DIR/cwm_zip
+TOOLCHAIN=/home/pinpong/android/toolchain/gcc-linaro-armeb-linux-gnueabihf-4.8-2013.10_linux/bin/armeb-linux-gnueabihf-
 export ARCH=arm
 export SUBARCH=arm
 
