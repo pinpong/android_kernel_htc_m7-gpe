@@ -20,10 +20,10 @@ make CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` mrprope
 
 # remove backup, modules and log files
 echo $(date) 'remove backup, modules and log files'
-if [ -d $CWM/m7-cwm_zip/system/lib/modules ] ; then
+if [ -d $CWM/m7-gpe-cwm_zip/system/lib/modules ] ; then
 	find $CWM -name '*.ko' | xargs rm
 else
-	mkdir -p $CWM/m7-cwm_zip/system/lib/modules
+	mkdir -p $CWM/m7-gpe-cwm_zip/system/lib/modules
 fi
 
 find $KERNEL_DIR -name '*~' | xargs rm
@@ -35,19 +35,19 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN
 
 # copy modules
 echo $(date) 'copy modules'
-find -name '*.ko' -exec cp -av {} $CWM/m7-cwm_zip/system/lib/modules/ \;
+find -name '*.ko' -exec cp -av {} $CWM/m7-gpe-cwm_zip/system/lib/modules/ \;
 
 # copy kernel image
 echo $(date) 'copy kernel image'
-cp arch/arm/boot/zImage $CWM/m7-cwm_zip/kernel/kernel
+cp arch/arm/boot/zImage $CWM/m7-gpe-cwm_zip/kernel/kernel
 
 # strip modules
 echo $(date) 'strip modules'
-${TOOLCHAIN}strip --strip-unneeded $CWM/m7-cwm_zip/system/lib/modules/*ko
+${TOOLCHAIN}strip --strip-unneeded $CWM/m7-gpe-cwm_zip/system/lib/modules/*ko
 
 # create cwm zip
 echo $(date) 'create cwm zip'
 TIMESTAMP=thoravukk-`date +%Y%m%d-%T`
-cd $CWM/m7-cwm_zip
+cd $CWM/m7-gpe-cwm_zip
 zip -r m7-$TIMESTAMP-cwm.zip . -x *.zip
-rm $CWM/m7-cwm_zip/kernel/kernel
+rm $CWM/m7-gpe-cwm_zip/kernel/kernel
