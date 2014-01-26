@@ -6,7 +6,6 @@ assert(getprop("ro.product.device") == "m7"    || getprop("ro.build.product") ==
        getprop("ro.product.device") == "m7ul"  || getprop("ro.build.product") == "m7ul"  ||
        getprop("ro.product.device") == "m7wlv" || getprop("ro.build.product") == "m7wlv" || 
        getprop("ro.product.device") == "m7vzw" || getprop("ro.build.product") == "m7vzw");
-ui_print("anykernel updater by koush");
 ui_print("flashing thoravukk kernel");
 ui_print("");
 ui_print("");
@@ -23,12 +22,6 @@ ui_print("unmounting system");
 ui_print("");
 ui_print("");
 unmount("/system");
-package_extract_dir("kernel", "/tmp");
-set_perm(0, 0, 0755, "/tmp/mkbootimg.sh");
-set_perm(0, 0, 0777, "/tmp/mkbootimg");
-set_perm(0, 0, 0777, "/tmp/unpackbootimg");
-run_program("/sbin/busybox", "dd", "if=/dev/block/mmcblk0p33", "of=/tmp/boot.img");
-run_program("/tmp/unpackbootimg", "-i", "/tmp/boot.img", "-o", "/tmp/");
-run_program("/tmp/mkbootimg.sh");
-run_program("/sbin/busybox", "dd", "if=/tmp/newboot.img", "of=/dev/block/mmcblk0p33");
+package_extract_file("boot.img", "/dev/block/mmcblk0p33");
+ui_print("");
 ui_print("Done");

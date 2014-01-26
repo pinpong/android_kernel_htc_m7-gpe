@@ -19,14 +19,10 @@ cd $KERNEL_DIR
 echo $(date) 'make mrproper'
 make CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` mrproper
 
-# remove backup, modules and log files
-echo $(date) 'remove backup, modules and log files'
-if [ -d $CWM/m7-gpe-cwm_zip/system/lib/modules ] ; then
-	find $CWM -name '*.ko' | xargs rm
-else
-	mkdir -p $CWM/m7-gpe-cwm_zip/system/lib/modules
-fi
-
+# remove backup, placeholder, modules and log files
+echo $(date) 'remove backup, placeholder, modules and log files'
+find $CWM -name 'placeholder' | xargs rm
+find $CWM -name '*.ko' | xargs rm
 find $KERNEL_DIR -name '*~' | xargs rm
 
 # make kernel
@@ -38,17 +34,19 @@ make -j`grep 'processor' /proc/cpuinfo | wc -l` CROSS_COMPILE=$TOOLCHAIN
 echo $(date) 'copy modules'
 find -name '*.ko' -exec cp -av {} $CWM/m7-gpe-cwm_zip/system/lib/modules/ \;
 
-# copy kernel image
-echo $(date) 'copy kernel image'
-cp arch/arm/boot/zImage $CWM/m7-gpe-cwm_zip/kernel/kernel
-
 # strip modules
 echo $(date) 'strip modules'
 ${TOOLCHAIN}strip --strip-unneeded $CWM/m7-gpe-cwm_zip/system/lib/modules/*ko
 
-# create cwm zip
+# create ramdisk and make boot.img
+echo $(date) 'create ramdisk and make boot.img'
+cd $CWM/ramdisk
+find . | cpio -o -H newc | gzip > ../ramdisk.gz
+mkbootimg --kernel $KERNEL_DIR/arch/arm/boot/zImage --ramdisk $CWM/ramdisk.gz --output $CWM/m7-gpe-cwm_zip/boot.img
+
 echo $(date) 'create cwm zip'
 TIMESTAMP=thoravukk-`date +%Y%m%d-%T`
 cd $CWM/m7-gpe-cwm_zip
 zip -r m7-$TIMESTAMP-cwm.zip . -x *.zip
-rm $CWM/m7-gpe-cwm_zip/kernel/kernel
+rm $CWM/m7-gpe-cwm_zip/boot.img
+rm $CWM/ramdisk.gz

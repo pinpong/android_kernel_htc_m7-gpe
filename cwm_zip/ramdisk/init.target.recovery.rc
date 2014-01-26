@@ -1,0 +1,114 @@
+# TODO: Remove un-necessary partition in "on emmc" section after mfgkernel
+#       is ready, it should be independent to system & data partition
+on fs
+    mkdir /system
+    mkdir /data 0771 system system
+    mkdir /persist 0771 system system
+
+    mkdir /devlog 0700 root root
+    devwait emmc@devlog
+    exec /sbin/e2fsck_recvy -p emmc@devlog
+    mount ext4 emmc@devlog /devlog noatime nosuid nodev data=ordered
+
+    mkdir /tombstones 0771 system system
+    mkdir /tombstones/mdm 0771 system system
+    mkdir /tombstones/modem 0771 system system
+    mkdir /tombstones/lpass 0771 system system
+    mkdir /tombstones/dsps 0771 system system
+
+    # For firmwares
+    mkdir /firmware 0771 system system
+    mkdir /vendor 0771 system system
+    mkdir /vendor/firmware 0771 system system
+
+    # 8064 has only mdm, use radio partition for it.
+    mkdir /firmware/mdm 0771 system system
+    devwait emmc@radio
+    mount vfat emmc@radio /firmware/mdm ro shortname=lower
+    exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/mdm/image /vendor/firmware "*.mbn *.img"
+
+    mkdir /data/qcks 0770 system system
+    mkdir /data/efs 0771 system system
+    #qmuxd require
+    mkdir /data/radio 0771 radio radio
+    mkdir /firmware/q6 0771 system system
+    devwait emmc@adsp
+    mount vfat emmc@adsp /firmware/q6 ro shortname=lower
+    exec /system/bin/sh /init.qcom.firmware_links.sh /firmware/q6 /vendor/firmware "q6.*"
+
+on boot
+
+    # Temp disable 3 cpus to prevent heat for M7
+    write /sys/devices/system/cpu/cpu1/online 0
+    write /sys/devices/system/cpu/cpu2/online 0
+    write /sys/devices/system/cpu/cpu3/online 0
+    chmod 444 /sys/devices/system/cpu/cpu1/online
+    chmod 444 /sys/devices/system/cpu/cpu2/online
+    chmod 444 /sys/devices/system/cpu/cpu3/online
+
+service port-bridge /system/bin/port-bridge /dev/smd0 /dev/ttyHSUSB0
+
+service mfgsrv /sbin/mfgsrv -i -t /dev/ttyHSL0 -t /dev/ttyHSUSB1
+    class core
+    user root
+    group root
+    disabled
+
+service kickstart /system/bin/qcks -1 modem_st1 -2 modem_st2 -3 radio_config -i /vendor/firmware/ -u
+    class core
+    oneshot
+    disabled
+
+service htc_ebdlogd /sbin/htc_ebdlogd_recvy -s -k -F /sbin -p V
+    class core
+    user root
+    disabled
+    oneshot
+    ioprio idle 0
+
+service mfg_htcqxdm2sd /sbin/mfg_htcqxdm2sd -d 1
+    disabled
+    oneshot
+
+service servicemanager /system/bin/servicemanager
+    critical
+    oneshot
+    disabled
+
+service media /system/bin/mediaserver
+    class main
+    user root
+    disabled
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc
+    ioprio rt 4
+
+on property:ro.bootmode=power_test
+    devwait emmc@system
+    mount ext4 emmc@system /system ro
+
+on property:ro.bootmode=recovery
+    devwait emmc@system
+#    mount ext4 emmc@system /system ro
+#    umount /system
+    # we will remap this as /mnt/sdcard with the sdcard fuse tool
+    mkdir /data 0771 system system
+    devwait emmc@userdata
+    mount ext4 emmc@userdata /data
+    mkdir /data/media 0775 media_rw media_rw
+    chown media_rw media_rw /data/media
+    umount /data
+
+on property:ro.mfgkernel=1
+    write /sys/power/wake_lock mfgkernel
+
+#on property:ro.bootmode=recovery
+#   write /sys/devices/platform/android_usb/host_mode 1
+
+#on property:ro.bootmode=recovery_manual
+#   write /sys/devices/platform/android_usb/host_mode 1
+
+on property:ro.9kramdump=0
+    start kickstart
+
+on property:ro.build.tags=test-keys
+    start htc_ebdlogd
