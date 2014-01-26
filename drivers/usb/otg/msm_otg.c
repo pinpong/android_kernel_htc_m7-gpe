@@ -1212,7 +1212,7 @@ skip_phy_resume:
 		enable_irq(motg->irq);
 	}
 
-	USBH_INFO("USB exited from low power mode\n");
+	USBH_DEBUG("USB exited from low power mode\n");
 
 	return 0;
 }
