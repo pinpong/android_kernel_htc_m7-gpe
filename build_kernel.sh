@@ -19,8 +19,10 @@ cd $KERNEL_DIR
 echo $(date) 'make mrproper'
 make CROSS_COMPILE=$TOOLCHAIN -j`grep 'processor' /proc/cpuinfo | wc -l` mrproper
 
-# remove backup, placeholder, modules and log files
+# remove backup, placeholder, modules ...
 echo $(date) 'remove backup, placeholder, modules and log files'
+rm $CWM/m7-gpe-cwm_zip/boot.img
+rm $CWM/ramdisk.gz
 find $CWM -name 'placeholder' | xargs rm
 find $CWM -name '*.ko' | xargs rm
 find $KERNEL_DIR -name '*~' | xargs rm
@@ -48,5 +50,3 @@ echo $(date) 'create cwm zip'
 TIMESTAMP=thoravukk-`date +%Y%m%d-%T`
 cd $CWM/m7-gpe-cwm_zip
 zip -r m7-$TIMESTAMP-cwm.zip . -x *.zip
-rm $CWM/m7-gpe-cwm_zip/boot.img
-rm $CWM/ramdisk.gz

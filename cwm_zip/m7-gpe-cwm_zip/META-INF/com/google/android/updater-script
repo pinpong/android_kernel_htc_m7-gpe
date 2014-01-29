@@ -1,11 +1,6 @@
 ui_print("");
 ui_print("");
-assert(getprop("ro.product.device") == "m7"    || getprop("ro.build.product") == "m7"    ||
-       getprop("ro.product.device") == "m7att" || getprop("ro.build.product") == "m7att" ||
-       getprop("ro.product.device") == "m7tmo" || getprop("ro.build.product") == "m7tmo" ||
-       getprop("ro.product.device") == "m7ul"  || getprop("ro.build.product") == "m7ul"  ||
-       getprop("ro.product.device") == "m7wlv" || getprop("ro.build.product") == "m7wlv" || 
-       getprop("ro.product.device") == "m7vzw" || getprop("ro.build.product") == "m7vzw");
+assert(getprop("ro.product.device") == "m7ul"    || getprop("ro.build.id") == "JWR66V.H107");
 ui_print("flashing thoravukk kernel");
 ui_print("");
 ui_print("");
