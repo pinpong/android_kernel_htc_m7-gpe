@@ -518,7 +518,7 @@ service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emul
     class late_start
 
 # fusewrapped external sdcard daemon running as media_rw (1023)
-service fuse_usb /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usb /storage/usb
+service fuse_usb /system/bin/sdcard -u 1023 -g 1023 -d /mnt/media_rw/usb /storage/usb
     class late_start
     disabled
 
