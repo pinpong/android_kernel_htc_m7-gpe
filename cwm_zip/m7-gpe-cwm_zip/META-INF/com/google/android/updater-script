@@ -1,6 +1,5 @@
 ui_print("");
 ui_print("");
-assert(getprop("ro.product.device") == "m7ul"    || getprop("ro.build.id") == "JWR66V.H107");
 ui_print("flashing thoravukk kernel");
 ui_print("");
 ui_print("");
