@@ -51,6 +51,11 @@ on init
     chown system /sys/power/pnpmgr/hotplug/mp_util_high_or
     chown system /sys/power/pnpmgr/hotplug/mp_util_low_and
     chown system /sys/power/pnpmgr/hotplug/mp_util_low_or
+    chown system /sys/devices/system/cpu/cpufreq/ondemand/down_differential
+    chown system /sys/devices/system/cpu/cpufreq/ondemand/input_event_min_freq
+    chown system /sys/devices/system/cpu/cpufreq/ondemand/sampling_down_factor
+    chown system /sys/devices/system/cpu/cpufreq/ondemand/shortcut
+    chown system /sys/devices/system/cpu/cpufreq/ondemand/up_threshold
     chown system /sys/devices/system/cpu/cpufreq/ondemand/optimal_freq
     chown system /sys/devices/system/cpu/cpufreq/ondemand/sync_freq
     chown system /sys/devices/system/cpu/cpu0/cpufreq/scaling_max_freq
@@ -92,7 +97,7 @@ on init
     write /sys/power/pnpmgr/hotplug/mp_util_low_or "0 20 0 0"
 
     #eMMC related:
-#   chown system /proc/sys/vm/dirty_ratio
+    chown system /proc/sys/vm/dirty_ratio
     chown system /sys/block/mmcblk0/queue/read_ahead_kb
 
 # for pnp thermal condition
@@ -118,6 +123,7 @@ service mpdecision /system/bin/mpdecision --no_sleep --avg_comp
 
 service pnpmgr /system/bin/pnpmgr
     class core
+    group system
     user system
 
 service thermald_boot /system/bin/thermald -c /system/etc/thermald_boot.conf

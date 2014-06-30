@@ -2,7 +2,8 @@
 ##
 on boot
 
-# Allow writing to the kernel trace log.
+# While S-ON, do NOT allow writing to the kernel trace log.
+on property:ro.sf=0
     chmod 0222 /sys/kernel/debug/tracing/trace_marker
 
 # Allow the shell group to enable (some) kernel tracing.

@@ -1,3 +1,6 @@
+# Copyright (c) 2013, The Linux Foundation. All rights reserved.
+# Not a Contribution.
+#
 # Copyright (C) 2012 The Android Open Source Project
 #
 # IMPORTANT: Do not create world writable files or directories.
@@ -8,6 +11,7 @@ import /init.environ.rc
 import /init.usb.rc
 import /init.${ro.hardware}.rc
 import /init.trace.rc
+import /init.power.rc
 
 on early-init
     # Set init and its forked children's oom_adj.
@@ -25,56 +29,71 @@ on early-init
 on init
 
 # HTC SSD Peripheral UI - BEGIN
-    # LSM330 Gyro
-    chown system system /sys/devices/virtual/ST_gyr/gyr/enable_device
-    chown system system /sys/devices/virtual/ST_gyr/gyr/pollrate_ms
-    chown system system /sys/devices/virtual/ST_gyr/gyr/fifo_mode
-    chown system system /sys/devices/virtual/ST_gyr/gyr/range
-    chown system system /sys/devices/virtual/ST_gyr/gyr/fifo_samples
-    chown system system /sys/devices/virtual/ST_gyr/gyr/enable_polling
-    chown system system /sys/devices/virtual/ST_gyr/gyr/cali_data
-    chown system system /sys/devices/virtual/ST_gyr/gyr/debug_event_report
-
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/enable_device
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/pollrate_ms
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/fifo_mode
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/range
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/fifo_samples
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/enable_polling
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/cali_data
-    chmod 0660 /sys/devices/virtual/ST_gyr/gyr/debug_event_report
-
-
-    # LSM330 Accelerometer
-    chown system system /sys/devices/virtual/ST_acc/acc/get_raw_data
-    chown system system /sys/devices/virtual/ST_acc/acc/enable_state_prog
-    chown system system /sys/devices/virtual/ST_acc/acc/pollrate_ms
-    chown system system /sys/devices/virtual/ST_acc/acc/enable_polling
-    chown system system /sys/devices/virtual/ST_acc/acc/enable_device
-    chown system system /sys/devices/virtual/ST_acc/acc/double_tap
-    chown system system /sys/devices/virtual/ST_acc/acc/chip_layout
-    chown system system /sys/devices/virtual/ST_acc/acc/range
-    chown system system /sys/devices/virtual/ST_acc/acc/set_k_value
-    chown system system /sys/devices/virtual/ST_acc/acc/calibration_version
-
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/get_raw_data
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/enable_state_prog
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/pollrate_ms
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/enable_polling
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/enable_device
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/double_tap
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/chip_layout
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/range
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/set_k_value
-    chmod 0660 /sys/devices/virtual/ST_acc/acc/calibration_version
-
-
     # BMA250 BOSCH
     chown system system /sys/class/htc_g_sensor/g_sensor/enable_cir_interrupt
     chmod 0660 /sys/class/htc_g_sensor/g_sensor/enable_cir_interrupt
     chown system system /sys/class/htc_g_sensor/g_sensor/en_sig_motion
     chmod 0660 /sys/class/htc_g_sensor/g_sensor/en_sig_motion
 # HTC SSD Peripheral UI - END
+
+    #htc sensorhub
+    chown system system /sys/class/bma250_powerkey/bma250/clear_powerkey_flag
+    chmod 0664 /sys/class/bma250_powerkey/bma250/clear_powerkey_flag
+    chown system system /dev/cwmcu
+    chmod 0666 /dev/cwmcu
+
+    chown system system sys/class/htc_sensorhub/sensor_hub/enable
+    chown system system sys/class/htc_sensorhub/sensor_hub/delay_ms
+    chown system system sys/class/htc_sensorhub/sensor_hub/barometer_self_test
+    chown system system sys/class/htc_sensorhub/sensor_hub/AP_calibrator_data_accRL
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_en
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_status_acc
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_accRL
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_status_mag
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_status_gyro
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_acc
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_mag
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_gyro
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_light
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_proximity
+    chown system system sys/class/htc_sensorhub/sensor_hub/calibrator_data_barometer
+    chown system system sys/class/htc_sensorhub/sensor_hub/data_barometer
+    chown system system sys/class/htc_sensorhub/sensor_hub/data_proximity
+    chown system system sys/class/htc_sensorhub/sensor_hub/data_proximity_polling
+    chown system system sys/class/htc_sensorhub/sensor_hub/data_light_polling
+    chown system system sys/class/htc_sensorhub/sensor_hub/sensor_hub_rdata
+    chown system system sys/class/htc_sensorhub/sensor_hub/ps_canc
+    chown system system sys/class/htc_sensorhub/sensor_hub/data_light_kadc
+    chown system system sys/class/htc_sensorhub/sensor_hub/firmware_version
+    chown system system sys/class/htc_sensorhub/sensor_hub/uart_debug
+    chown system system sys/class/htc_sensorhub/sensor_hub/boot_mode
+    chown system system sys/class/htc_sensorhub/sensor_hub/ls_mechanism
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/enable
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/delay_ms
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/barometer_self_test
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/AP_calibrator_data_accRL
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_en
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_status_acc
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_status_mag
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_status_gyro
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_acc
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_accRL
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_mag
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_gyro
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_light
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_proximity
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/calibrator_data_barometer
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/data_barometer
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/data_proximity
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/data_proximity_polling
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/data_light_polling
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/sensor_hub_rdata
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/ps_canc
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/data_light_kadc
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/firmware_version
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/uart_debug
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/boot_mode
+    chmod 0664 sys/class/htc_sensorhub/sensor_hub/ls_mechanism
 
 sysclktz 0
 
@@ -89,7 +108,7 @@ loglevel 3
 
 # Right now vendor lives on the same filesystem as system,
 # but someday that may change.
- #   symlink /system/vendor /vendor
+    #symlink /system/vendor /vendor
 
 # Create cgroup mount point for cpu accounting
     mkdir /acct
@@ -187,13 +206,22 @@ loglevel 3
 # This is needed by any process that uses socket tagging.
     chmod 0644 /dev/xt_qtaguid
 
-# Unmount debugfs if SHIP S-ON
+# Change permission for /dev/cwmcu if SHIP S-ON
 on property:ro.sf=1
-	umount /sys/kernel/debug
+	chmod 0600 /dev/cwmcu
 
 # Create location for fs_mgr to store abbreviated output from filesystem
 # checker programs.
     mkdir /dev/fscklogs 0770 root system
+
+# pstore/ramoops previous console log
+    mount pstore pstore /sys/fs/pstore
+    chown system log /sys/fs/pstore/console-ramoops
+    chmod 0440 /sys/fs/pstore/console-ramoops
+
+# Unmount debugfs if SHIP S-ON
+on property:ro.sf=1
+	umount /sys/kernel/debug
 
 on post-fs
     # once everything is setup, no need to modify /
@@ -206,6 +234,13 @@ on post-fs
     chmod 0770 /cache
     # We restorecon /cache in case the cache partition has been reset.
     restorecon /cache
+
+    chown root root /devlog
+    chmod 0700 /devlog
+    restorecon /devlog
+    chown root root /fataldevlog
+    chmod 0700 /fataldevlog
+    restorecon /fataldevlog
 
     # This may have been created by the recovery system with odd permissions
     chown system cache /cache/recovery
@@ -295,6 +330,9 @@ on post-fs-data
     mkdir /data/resource-cache 0771 system system
     chown system system /data/resource-cache
     chmod 0771 /data/resource-cache
+
+    chown root recvy_access /data/data/recovery
+    chmod 0660 /data/data/recovery
 
     # create the lost+found directories, so as to enforce our permissions
     mkdir /data/lost+found 0770 root root
@@ -436,13 +474,12 @@ write /proc/sys/kernel/core_pattern |/system/bin/dalvik_coredump.sh\ %p\ %u\ %t\
     chown system system /sys/kernel/ipv4/tcp_rmem_max
     chown root radio /proc/cmdline
 
-# Set these so we can remotely update SELinux policy
-    chown system system /sys/fs/selinux/load
-    chown system system /sys/fs/selinux/enforce
-
 # HTC SSD Peripheral UI - BEGIN
+
+# P-sensor
     chown radio radio /sys/class/optical_sensors/proximity/PhoneApp_status
     chmod 0660 /sys/class/optical_sensors/proximity/PhoneApp_status
+
     chown system system /sys/class/leds/green/brightness
     chown system system /sys/class/leds/green/blink
     chown system system /sys/class/leds/green/off_timer
@@ -457,28 +494,38 @@ write /proc/sys/kernel/core_pattern |/system/bin/dalvik_coredump.sh\ %p\ %u\ %t\
     chown system system /sys/class/leds/flashlight/brightness
     chown system system /sys/class/leds/indicator/ModeRGB
     chown system system /sys/class/leds/indicator/off_timer
+
+    chown system system /sys/class/htc_cir/cir/reset_cir
+    chmod 0660 /sys/class/htc_cir/cir/reset_cir
+    chown system system /sys/class/htc_cir/cir/enable_cir
+    chmod 0660 /sys/class/htc_cir/cir/enable_cir
+    chown system system /sys/class/htc_cir/cir/enable_learn
+    chmod 0660 /sys/class/htc_cir/cir/enable_learn
 # HTC SSD Peripheral UI - END
 
 # Set volume key wake up attribute file permission
     chown media media /sys/keyboard/vol_wakeup
 
-#This node is for One Release ROM usage
-    chown root system /proc/driver/hdf
-    chmod 0664 /proc/driver/hdf
+# Set these so we can remotely update SELinux policy
+    chown system system /sys/fs/selinux/load
+    chown system system /sys/fs/selinux/enforce
 
 # Define TCP buffer sizes for various networks
 #   ReadMin, ReadInitial, ReadMax, WriteMin, WriteInitial, WriteMax,
     setprop net.tcp.buffersize.default 4096,87380,110208,4096,16384,110208
     setprop net.tcp.buffersize.wifi    524288,1048576,2097152,262144,524288,1048576
-    setprop net.tcp.buffersize.lte     524288,1048576,5120000,4096,221184,3461120
-    setprop net.tcp.buffersize.hspap   4096,174760,1572864,4096,225280,1220608
-    setprop net.tcp.buffersize.hspa    4096,174760,1572864,4096,225280,1220608
-    setprop net.tcp.buffersize.hsupa   4096,174760,1572864,4096,225280,1220608
-    setprop net.tcp.buffersize.hsdpa   4096,174760,1572864,4096,225280,1220608
-    setprop net.tcp.buffersize.umts    4096,174760,1572864,4096,225280,1220608
+    setprop net.tcp.buffersize.lte     524288,1048576,2097152,262144,524288,1048576
+    setprop net.tcp.buffersize.umts    4094,87380,110208,4096,16384,110208
+    setprop net.tcp.buffersize.hspa    4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.hsupa   4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.hsdpa   4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.hspap   4094,87380,1220608,4096,16384,1220608
     setprop net.tcp.buffersize.edge    4093,26280,35040,4096,16384,35040
     setprop net.tcp.buffersize.gprs    4092,8760,11680,4096,8760,11680
-    setprop net.tcp.buffersize.evdo_b  4094,87380,262144,4096,16384,262144
+    setprop net.tcp.buffersize.evdo    4094,87380,262144,4096,16384,262144
+
+# Define default initial receive window size in segments.
+    setprop net.tcp.default_init_rwnd 60
 
     class_start core
     class_start main
@@ -514,9 +561,15 @@ on property:vold.decrypt=trigger_shutdown_framework
 on property:sys.powerctl=*
     powerctl ${sys.powerctl}
 
-# system server cannot write to /proc/sys files, so proxy it through init
+# system server cannot write to /proc/sys files,
+# and chown/chmod does not work for /proc/sys/ entries.
+# So proxy writes through init.
 on property:sys.sysctl.extra_free_kbytes=*
     write /proc/sys/vm/extra_free_kbytes ${sys.sysctl.extra_free_kbytes}
+# "tcp_default_init_rwnd" Is too long!
+on property:sys.sysctl.tcp_def_init_rwnd=*
+    write /proc/sys/net/ipv4/tcp_default_init_rwnd ${sys.sysctl.tcp_def_init_rwnd}
+
 
 ## Daemon processes to be run by init.
 ##
@@ -564,10 +617,6 @@ service adbd /sbin/adbd
 # adbd on at boot in emulator
 on property:ro.kernel.qemu=1
     start adbd
-
-service sfc /sbin/sfc 
-    class core
-    oneshot
 
 service servicemanager /system/bin/servicemanager
     class core
@@ -623,16 +672,10 @@ service drm /system/bin/drmserver
     user drm
     group drm system inet drmrpc
 
-service userinit /system/xbin/busybox run-parts /system/etc/init.d
-    oneshot
-    class late_start
-    user root
-    group root
-
 service media /system/bin/mediaserver
     class main
     user media
-    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm cw_access radio
+    group audio camera inet net_bt net_bt_admin net_bw_acct drmrpc mediadrm qcom_diag radio cw_access
     ioprio rt 4
 
 service bootanim /system/bin/bootanimation

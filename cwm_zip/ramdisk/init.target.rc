@@ -619,12 +619,6 @@ service hdmid /system/bin/hdmid
 on property:ro.hdmi.enable=true
     start hdmid
 
-service tpd /sbin/tpd
-    class core
-    cgroup bg
-    user root
-
-
 # for USB internet sharing
 service udhcpd /system/bin/udhcpd
 	disabled
